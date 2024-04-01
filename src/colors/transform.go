@@ -73,7 +73,7 @@ func MarkupText(pcolors map[string]int, conf argparse.Config) string {
 				state = "readingReset"
 				//i += 2 // Skip "[/"
 			} else if char == ']' {
-				color := resolveColorCode(colorBuffer.String(), pcolors, conf)
+				color := resolveColorCode(colorBuffer.String(), pcolors, conf, false)
 				sb.WriteString(color) // Apply the resolved color code
 				//sb.WriteByte(str[i+1])
 				colorBuffer.Reset()
@@ -97,7 +97,7 @@ func MarkupText(pcolors map[string]int, conf argparse.Config) string {
 
 	// If we end in "readingColor" state, apply the last color code
 	if state == "readingColor" {
-		color := resolveColorCode(colorBuffer.String(), pcolors, conf)
+		color := resolveColorCode(colorBuffer.String(), pcolors, conf, false)
 		sb.WriteString(color)
 	}
 
@@ -120,19 +120,27 @@ func getSurrounding(line string, from int, count int) string {
 	return line[start:end]
 }
 
-func resolveColorCode(colorStr string, pcolors map[string]int, conf argparse.Config) string {
+func resolveColorCode(colorStr string, pcolors map[string]int, conf argparse.Config, resolvingBackground bool) string {
 
 	// fmt.Printf("In:  `%v`\n", colorStr)
 	if len(colorStr) == 0 || colorStr == "/" || conf.ForceColor == 1 {
 		return NO_COLOR
 	}
 
+	output := ""
+	segments := strings.Split(colorStr, " ")
+	if len(segments) == 3 {
+		// Get the background color
+		output = resolveColorCode(segments[2], pcolors, conf, true)
+		colorStr = segments[0]
+	}
+
 	if colorStr[0] == '#' && len(colorStr) == 7 {
 		// Parse hex color (e.g., #ff04aa)
-		value, err := strconv.ParseInt(colorStr[1:], 16, 32)
+		iColor, err := strconv.ParseInt(colorStr[1:], 16, 32)
 
 		if err == nil {
-			return ret(fmt.Sprintf("\033[38;5;%dm", value))
+			output += ret(outputColorFromRgb(int(iColor), pcolors, resolvingBackground))
 		}
 
 	} else if strings.HasPrefix(colorStr, "rgb(") {
@@ -141,26 +149,37 @@ func resolveColorCode(colorStr string, pcolors map[string]int, conf argparse.Con
 		_, err := fmt.Sscanf(colorStr, "rgb(%d, %d, %d)", &r, &g, &b)
 
 		if err == nil {
-			return ret(fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b))
+			output += ret(fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b))
 		}
 
 	} else {
-		// Delegate to your color name mapping logic
-		sColor, found := pcolors[colorStr]
+		iColor, found := pcolors[colorStr]
 
 		if !found {
-			return colorStr // just return the input if not a color
+			return ""
+
+			// output += colorStr // Just return the input if not a color
 		}
 
-		_r, _g, _b := IntHexToRGB(sColor)
-
-		// fmt.Printf("cols: 'r:%d', 'g:%d', 'b:%d'\n", _r, _g, _b)
-		r, g, b := IntHexToRGB(FindNearestColor([3]byte{_r, _g, _b}, pcolors))
-
-		return ret(fmt.Sprintf("\033[38;2;%v;%v;%vm", r, g, b))
+		output += ret(outputColorFromRgb(iColor, pcolors, resolvingBackground))
 	}
 
-	return NO_COLOR // Default to a color reset
+	return output
+}
+
+func outputColorFromRgb(iColor int, pcolors map[string]int, background bool) string {
+
+	colorType := 38
+	if background {
+		colorType = 48
+	}
+
+	_r, _g, _b := IntHexToRGB(iColor)
+
+	// fmt.Printf("cols: 'r:%d', 'g:%d', 'b:%d'\n", _r, _g, _b)
+	r, g, b := IntHexToRGB(FindNearestColor([3]byte{_r, _g, _b}, pcolors))
+
+	return fmt.Sprintf("\033[%d;2;%v;%v;%vm", colorType, r, g, b)
 }
 
 func ret(in string) string {
