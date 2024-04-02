@@ -10,11 +10,24 @@ import (
 
 func main() {
 	args := os.Args[1:]
-	// fmt.Printf("All: '%s'\n", args[:])
 
+	// Sort text and command switches, then get a config
 	conf := argparse.ParseArguments(args)
-	//fmt.Println(conf.TextInput)
 
+	// Get a list of supported colors (unless otherwise specified by user)
 	pcolors := colors.LoadPossibleColors(os.Getenv("TERM"), conf)
-	fmt.Println(colors.MarkupText(pcolors, conf))
+
+	end := ""
+	if conf.NewLine {
+		end = "\n"
+	}
+
+	var markupText string
+	if conf.NoMarkup {
+		markupText = conf.TextInput
+	} else {
+		markupText = colors.MarkupText(pcolors, conf)
+	}
+
+	fmt.Printf("%s%s", markupText, end)
 }
