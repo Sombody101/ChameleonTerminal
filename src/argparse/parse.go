@@ -1,8 +1,6 @@
 package argparse
 
 import (
-	"fmt"
-	"os"
 	"strings"
 )
 
@@ -24,6 +22,28 @@ type Config struct {
 
 	// Input minus the config switches
 	TextInput string
+
+	// Print help info then exit
+	PrintHelp bool
+
+	ListColors bool
+
+	ListColorsAsBackground bool
+
+	// For debugging
+	Verbose bool
+}
+
+var Configuration = Config{
+	ForceColor:             0,
+	Escape:                 false,
+	NewLine:                true,
+	NoMarkup:               false,
+	TextInput:              "",
+	PrintHelp:              false,
+	ListColors:             false,
+	ListColorsAsBackground: false,
+	Verbose:                false,
 }
 
 /*
@@ -33,12 +53,10 @@ type Config struct {
  *  -C: Force no color
  *	-M: No markup
  */
-func ParseArguments(args []string) Config {
-	conf := Config{
-		ForceColor: 0,
-		Escape:     false,
-		NewLine:    true,
-		NoMarkup:   false,
+func ParseArguments(args []string) {
+	if len(args) == 0 {
+		Configuration.TextInput = ""
+		return
 	}
 
 	var sb strings.Builder
@@ -48,16 +66,29 @@ func ParseArguments(args []string) Config {
 		if word == "--" {
 			// End of input arguments
 			sb.WriteString(strings.Join(args[i:], " "))
-			conf.TextInput = sb.String()
-			return conf
+			Configuration.TextInput = sb.String()
+			return
 		}
 
 		if strings.HasPrefix(word, "--") {
 			// Add long-hand options
 			switch word[2:] {
 			case "help":
-				printHelpInfo()
-				os.Exit(0)
+				Configuration.PrintHelp = true
+				return
+
+			case "listc":
+				Configuration.ListColors = true
+				continue
+
+			case "listcb":
+				Configuration.ListColors = true
+				Configuration.ListColorsAsBackground = true
+				continue
+
+			case "verbose":
+				Configuration.Verbose = true
+				continue
 			}
 
 		} else if strings.HasPrefix(word, "-") {
@@ -66,35 +97,38 @@ func ParseArguments(args []string) Config {
 				switch c {
 
 				case 'n':
-					conf.NewLine = false
+					Configuration.NewLine = false
 					continue
 
 				case 'e':
-					conf.Escape = true
+					Configuration.Escape = true
 					continue
 
 				case 'c':
-					conf.ForceColor = 2 // 256 color
+					Configuration.ForceColor = 2 // 256 color
 					continue
 
-				case 'z':
-					conf.ForceColor = 3 // 8 color
-					continue
+				//case 'z':
+				//	Configuration.ForceColor = 3 // 8 color
+				//	continue
 
 				case 'C':
-					conf.ForceColor = 1 // no color
+					Configuration.ForceColor = 1 // no color
 					continue
 
 				case 'M':
-					conf.NoMarkup = true
+					Configuration.NoMarkup = true
 					continue
 
 				default:
-					fmt.Printf("gecko: Unknown option '%c'\n", c)
-					os.Exit(2)
+					// Just append it to the output (like echo)
+
+					//fmt.Printf("gecko: Unknown option '%c'\n", c)
+					//os.Exit(2)
 				}
 			}
 
+			continue
 		}
 
 		sb.WriteString(word)
@@ -102,31 +136,7 @@ func ParseArguments(args []string) Config {
 	}
 
 	output := sb.String()
-	conf.TextInput = output[:len(output)-1]
-	return conf
-}
-
-func printHelpInfo() {
-	fmt.Println("usage: gecko [options...] [text..]")
-	fmt.Println("Display text with markup (color), speedily and efficiently.")
-	fmt.Println()
-	fmt.Println("Stop reading options after standalone '--' is read.")
-	fmt.Println()
-	fmt.Println("    Options:")
-	fmt.Println("      -n:\tNo newline when printing output text")
-	fmt.Println()
-	fmt.Println("      -e:\tResolve escape codes")
-	fmt.Println()
-	fmt.Println("      -c:\tForce color output even when not detected as supported (256 color)")
-	fmt.Println()
-	fmt.Println("      -z:\tForce color output even when not detected as supported (8 color)")
-	fmt.Println()
-	fmt.Println("      -C:\tForce no color output even when detected as supported")
-	fmt.Println()
-	fmt.Println("      -M:\tDo not resolve markup sequences")
-	fmt.Println()
-	fmt.Println("    Exit Status:")
-	fmt.Println("\t2: Option not found")
-	fmt.Println("\tdefault (0): Program success")
-
+	if len(output) != 0 {
+		Configuration.TextInput = output[:len(output)-1]
+	}
 }

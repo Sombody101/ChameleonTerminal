@@ -1,100 +1,82 @@
 package colors
 
 import (
+	"bufio"
 	"fmt"
 	"gecko/argparse"
+	"os"
 	"os/exec"
-
 	"strings"
 )
 
-func LoadPossibleColors(term string, conf argparse.Config) map[string]int {
-	pcolors := map[string]int{}
+func LoadPossibleColors(term string) {
 
-	switch conf.ForceColor {
+	switch argparse.Configuration.ForceColor {
 	case 1:
-		return pcolors // No color
+		return // No color
 
 	case 2:
-		LoadColors256(pcolors) // 256 colors
-		return pcolors
+		LoadColors256() // 256 colors
+		return
 
-	case 3:
-		LoadColors8(pcolors) // 8 colors
-		return pcolors
+		//case 3:
+		//	LoadColors8(pcolors) // 8 colors
+		//	return pcolors
 	}
 
-	b_colors, err := exec.Command("tput", "colors").Output()
-
-	if err == nil {
-		s_colors := string(b_colors[:len(b_colors)-1]) // Trim newline
-		//colors, s_err := strconv.Atoi(string(s_colors))
-		//if s_err != nil {
-		//	return manualColorCheck(term, pcolors)
-		//}
-
-		switch s_colors {
-		case "256":
-			LoadColors256(pcolors)
-
-		case "8":
-			LoadColors8(pcolors)
-
-		default:
-			// Try manually getting the colors
-			manualColorCheck(term, pcolors)
-		}
-
-	} else {
-		return manualColorCheck(term, pcolors)
-	}
-
-	return pcolors
+	if ansiSupported() {
+		LoadColors256()
+	} // Otherwise load no colors
 }
 
-func manualColorCheck(term string, colors map[string]int) map[string]int {
+func ansiSupported() bool {
+	// Check using tput if available
+	if _, err := exec.LookPath("tput"); err == nil {
+		out, err := exec.Command("tput", "colors").Output()
+		if err == nil {
+			var numColors int // Declare numColors here
 
-	//if strings.Contains(strings.ToLower(term), "256color") {
-	//	LoadColors256(colors)
-	//} else {
-	//	LoadColors8(colors)
-	//}
+			_, err := fmt.Sscanln(string(out), &numColors)
 
-	fmt.Println("manual")
-
-	/*
-		xterm: Supports up to 256 colors (xterm-256color).
-		rxvt: Supports up to 64 colors (rxvt-256color for 256 colors).
-		rxvt-unicode: Supports up to 256 colors (rxvt-unicode-256color).
-		linux: Typically supports only 16 colors.
-		vt100 and vt220: Usually support only basic ANSI colors (8 colors).
-		ansi: Supports basic ANSI colors (8 colors).
-		screen: Supports up to 256 colors (screen-256color).
-		tmux: Supports up to 256 colors (tmux-256color).
-		konsole: Supports up to 256 colors (konsole-256color).
-		gnome-256color: Supports up to 256 colors.
-		terminator: Supports up to 256 colors.
-	*/
-
-	switch strings.ToLower(term) {
-
-	// 256 colors
-	case "xterm":
-	case "rxvt-unicode":
-	case "rxvt-unicode-256color":
-		LoadColors256(colors)
-
-	// 8 colors
-	case "ansi":
-	case "rxvt":
-	case "linux":
-	case "vs100":
-	case "vt220":
-		LoadColors8(colors)
-
-	default:
-		// Otherwise, load no colors
+			if err == nil && numColors >= 8 {
+				return true
+			}
+		}
 	}
 
-	return colors
+	// Direct console query (ensure CSI is defined)
+	const csi = "\033["
+	fmt.Print(csi + "c")
+	reader := bufio.NewReader(os.Stdin)
+	ansiReport, err := reader.ReadString('c')
+
+	if err != nil {
+		return false
+	}
+
+	return strings.TrimSpace(ansiReport) != ""
+}
+
+func PrintHelpInfo() {
+	fmt.Println("usage: gecko [[options...]] [[text..]]")
+	fmt.Println("Display text with markup (color), speedily and efficiently.")
+	fmt.Println()
+	fmt.Println("Stop reading options after standalone '--' is read.")
+	fmt.Println()
+	fmt.Println("    Options:")
+	fmt.Println("      [gold1]-n[/]:\tNo newline when printing output text")
+	fmt.Println()
+	fmt.Println("      [gold1]-e[/]:\tResolve escape codes")
+	fmt.Println()
+	fmt.Println("      [gold1]-c[/]:\tForce color output even when not detected as supported (256 color)")
+	fmt.Println()
+	fmt.Println("      [gold1]-z[/]:\tForce color output even when not detected as supported (8 color)")
+	fmt.Println()
+	fmt.Println("      [gold1]-C[/]:\tForce no color output even when detected as supported")
+	fmt.Println()
+	fmt.Println("      [gold1]-M[/]:\tDo not resolve markup sequences")
+	fmt.Println()
+	fmt.Println("    Exit Status:")
+	fmt.Println("\t2: Option not found")
+	fmt.Println("\t0: Program success (default)")
 }
