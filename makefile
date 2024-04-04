@@ -1,12 +1,12 @@
-PACKAGE := gecko
-
-# Local to the root of the project, not the repository
-output_path ?= ../build/gecko
-
 # Check if Go is installed
 ifeq (, $(shell which go))
 	$(error Go is not installed!)
 endif
+
+PACKAGE := gecko
+
+# Local to the root of the project, not the repository
+output_path ?= ../build/gecko
 
 # Get version using git describe
 VERSION := $(shell git describe --tags --always --abbrev=0 --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null || echo "v0.0.0")

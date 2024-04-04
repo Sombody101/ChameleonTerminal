@@ -60,7 +60,7 @@ An example of styles being used with Gecko:
 $ gecko "[blinking red]WARNING: I HAD TO LEARN ANOTHER PROGRAMMING LANGUAGE TO MAKE THIS, PLEASE USE IT[/]"
 ```
 
-Or as mentioned above, it *any order*:
+Or as mentioned above, in *any order*:
 
 ```bash
 $ gecko "[underlined cyan blinking on black]wOW, THIs Is soO COoOl![/]"
