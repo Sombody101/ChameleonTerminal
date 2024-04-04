@@ -8,13 +8,6 @@ ifeq (, $(shell which go))
 	$(error Go is not installed!)
 endif
 
-# Version number
-MAGOR := 0
-MINOR := 1
-DATE := $(shell date +'%Y.%m')
-VERSION := $(DATE).$(MAGOR).$(MINOR)
-
-
 # Get version using git describe
 VERSION := $(shell git describe --tags --always --abbrev=0 --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null || echo "v0.0.0")
 
