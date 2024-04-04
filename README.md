@@ -1,6 +1,6 @@
 # Gecko
 
-A command line tool that makes it easier to color text, with great speed!
+A command line tool that makes it easier to style text, with great speed!
 
 ## Table of Contents
 1. [Using Gecko](#using-gecko)
