@@ -26,6 +26,13 @@ Gecko follows the same markup tagging system as [Spectre.Console](https://github
 
 Unlike [Spectre.Console](https://github.com/spectreconsole/spectre.console/tree/main), Gecko doesn't read markup tags like a stack (doesn't require a trailing `[/]` to specify the end of each color segment). You can just switch colors on the fly, and the `[/]` tag has been changed to the reset color tag. It can be used anywhere in the input string, and it will reset the console to it's default. 
 
+A list of all colors can be found [Here](https://spectreconsole.net/appendix/colors). Or, you can use this command to get a list of
+all colors:
+
+```bash
+$ gecko --listc # or --listcb to see them as background colors
+```
+
 It's recommended that you still use the `[/]` tag, at least at the end of the line to prevent runaway colors from leaking into the users prompt, or terminals next output. An even better
 solution is to add `\033[0m` to the front of your `PS1` environment variable to ensure nothing can mess with the next input prompt.
 
