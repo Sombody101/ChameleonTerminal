@@ -195,10 +195,10 @@ func resolveColorCode(colorStr string, resolvingBackground bool) string {
 	}
 
 	// 'm' terminates the escape code, regardless of style data being present
-	finalColor = fmt.Sprintf("\033[%s;%sm", styleStr, finalColor)
+	finalColor = fmt.Sprintf("%s;%s", styleStr, finalColor)
 	finalColor = cleanSemicolons(finalColor)
-	finalColor = Verbose("final color", finalColor)
-	return finalColor
+	finalColor = fmt.Sprintf("\033[%sm", finalColor)
+	return Verbose("final color", finalColor)
 }
 
 // Format a color from Hex to RGB string

@@ -77,6 +77,7 @@ func PrintHelpInfo() {
 	fmt.Println("      -M:\tDo not resolve markup sequences")
 	fmt.Println()
 	fmt.Println("      --listc:\tList possible colors (listc[colors])")
+	fmt.Println("          (Add text after to change sample text, markup is still parsed)")
 	fmt.Println()
 	fmt.Println("      --listcb:\tList possible colors as backgrounds (listc[olors]b[ackgrounds])")
 	fmt.Println()
