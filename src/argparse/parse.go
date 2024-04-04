@@ -1,6 +1,9 @@
 package argparse
 
 import (
+	"fmt"
+	"gecko/version"
+	"os"
 	"strings"
 )
 
@@ -89,6 +92,10 @@ func ParseArguments(args []string) {
 			case "verbose":
 				Configuration.Verbose = true
 				continue
+
+			case "version":
+				fmt.Printf("v%s\nch: %s\nbt: %s\n", version.VERSION, version.COMMIT_HASH, version.BUILD_TIME)
+				os.Exit(0)
 			}
 
 		} else if strings.HasPrefix(word, "-") {

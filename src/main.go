@@ -20,10 +20,13 @@ func main() {
 
 	if argparse.Configuration.PrintHelp {
 		colors.PrintHelpInfo()
+		os.Exit(0)
 	}
 
+	// List all colors
 	if argparse.Configuration.ListColors {
 		listColors()
+		os.Exit(0)
 	}
 
 	// Add newline if selected
@@ -68,6 +71,4 @@ func listColors() {
 		colorCode := colors.Colors[colorName]
 		fmt.Println(colors.MarkupText(fmt.Sprintf("%-17s (#%06x) [%s]%s[/]", colorName, colorCode, sampleColor, sampleText)))
 	}
-
-	os.Exit(0)
 }
