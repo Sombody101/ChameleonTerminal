@@ -20,7 +20,7 @@ $ gecko "Hello, World!"
 But, this doesn't print with any color.
 To use color, you need to add a markup tag. Like So:
 ```bash
-$ gecko "[cyan]This text is cyan![/]"
+$ gecko "[cyan1]This text is cyan![/]"
 ```
 Gecko follows the same markup tagging system as [Spectre.Console](https://github.com/spectreconsole/spectre.console/tree/main). It even uses the same color names, just with a couple small differences.
 
@@ -38,7 +38,7 @@ solution is to add `\033[0m` to the front of your `PS1` environment variable to 
 Gecko also implements an option to color the background of text. All you need to do is add the keyword `on` after the first color in a markup tag, then the color of the background color. Like so:
 
 ```bash
-$ gecko "[cyan on white]This should look great![/]"
+$ gecko "[cyan1 on white]This should look great![/]"
 ```
 
 ### Different Colors
@@ -63,7 +63,7 @@ $ gecko "[blinking red]WARNING: I HAD TO LEARN ANOTHER PROGRAMMING LANGUAGE TO M
 Or as mentioned above, in *any order*:
 
 ```bash
-$ gecko "[underlined cyan blinking on black]wOW, THIs Is soO COoOl![/]"
+$ gecko "[underlined cyan1 blinking on black]wOW, THIs Is soO COoOl![/]"
 ```
 
 ### Escaping Markup Tags

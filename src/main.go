@@ -30,9 +30,9 @@ func main() {
 	}
 
 	// Add newline if selected
-	end := ""
+	end := '\000'
 	if argparse.Configuration.NewLine {
-		end = "\n"
+		end = '\n'
 	}
 
 	// Markup line if selected
@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// Print final output
-	fmt.Printf("%s%s", markupText, end)
+	fmt.Printf("%s%c", markupText, end)
 }
 
 // List all supported colors
