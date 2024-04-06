@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
 	"gecko/argparse"
 	"gecko/colors"
@@ -26,6 +27,12 @@ func main() {
 	// List all colors
 	if argparse.Configuration.ListColors {
 		listColors()
+		os.Exit(0)
+	}
+
+	// List all styles
+	if argparse.Configuration.ListStyles {
+		listStyles()
 		os.Exit(0)
 	}
 
@@ -70,5 +77,25 @@ func listColors() {
 
 		colorCode := colors.Colors[colorName]
 		fmt.Println(colors.MarkupText(fmt.Sprintf("%-17s (#%06x) [%s]%s[/]", colorName, colorCode, sampleColor, sampleText)))
+	}
+}
+
+func listStyles() {
+	sampleText := "Hello, World!"
+	if argparse.Configuration.TextInput != "" {
+		sampleText = argparse.Configuration.TextInput
+	}
+
+	keys := make([]string, 0, len(colors.FormatCodes))
+	for k := range colors.FormatCodes {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, styleName := range keys {
+		sampleStyle := styleName
+
+		styleCode := strings.Trim(colors.FormatCodes[styleName], ";")
+		fmt.Println(colors.MarkupText(fmt.Sprintf("%-11s (ANSI: %+2s) [%s]%s[/]", styleName, styleCode, sampleStyle, sampleText)))
 	}
 }

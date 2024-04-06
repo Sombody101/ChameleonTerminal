@@ -33,6 +33,8 @@ type Config struct {
 
 	ListColorsAsBackground bool
 
+	ListStyles bool
+
 	// For debugging
 	Verbose bool
 }
@@ -87,6 +89,10 @@ func ParseArguments(args []string) {
 			case "listcb":
 				Configuration.ListColors = true
 				Configuration.ListColorsAsBackground = true
+				continue
+
+			case "lists":
+				Configuration.ListStyles = true
 				continue
 
 			case "verbose":

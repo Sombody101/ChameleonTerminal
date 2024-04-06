@@ -226,7 +226,7 @@ func addExtraStyles(str string) (string, string) {
 
 	// https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
 	for _, item := range strings.Split(str, " ") {
-		code, found := formatCodes[item]
+		code, found := FormatCodes[item]
 
 		if found {
 			sb.WriteString(code)
@@ -246,16 +246,17 @@ func addExtraStyles(str string) (string, string) {
 }
 
 // Known (and supported) codes to manipulate terminal input
-var formatCodes = map[string]string{
-	"bold":       ";1",
-	"faint":      ";2",
-	"italic":     ";3",
-	"underlined": ";4",
-	"blinking":   ";5",
-	"fblinking":  ";6", // "fast" blinking (some terminals render at the same speed as 'blinking')
-	"swap":       ";7",
-	"dunderline": ";21", // "double" underlined
-	"overlined":  ";53",
+var FormatCodes = map[string]string{
+	"bold":        ";1",
+	"dim":         ";2",
+	"italic":      ";3",
+	"underlined":  ";4",
+	"blinking":    ";5",
+	"fblinking":   ";6", // "fast" blinking (some terminals render at the same speed as 'blinking')
+	"swap":        ";7",
+	"striked":     ";9",
+	"dunderlined": ";21", // "double" underlined
+	"overlined":   ";53",
 }
 
 func expandEscapeCodes(str string) string {

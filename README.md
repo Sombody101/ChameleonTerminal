@@ -86,7 +86,7 @@ $ gecko "[[this isn't going to be parsed for colors :D]"
 
 ## Releases
 
-Go to [Releases](releases) and download the most recent version.
+Go to [Releases](https://github.com/ScripturaOpus/ChameleonTerminal/releases/) and download the most recent version.
 
 ## Building Yourself
 
