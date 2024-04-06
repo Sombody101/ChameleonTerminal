@@ -48,6 +48,12 @@ Gecko also implements an option to color the background of text. All you need to
 $ gecko "[cyan1 on white]This should look great![/]"
 ```
 
+To change only the background and leave the foreground color alone, use an underscore (`_`) then the `on` keyword with your wanted background.
+
+```bash
+$ gecko "[_ on white]Let's hope their default font color isn't white..."
+```
+
 ### Different Colors
 Don't like the preset colors and want to use your own? Well you can use both hex an RGB values!
 Gecko will adjust the color to the best of it's ability based on what the users terminal supports. You can use them like this:
@@ -90,7 +96,7 @@ Go to [Releases](https://github.com/ScripturaOpus/ChameleonTerminal/releases/) a
 
 ## Building Yourself
 
-Install the GoLang [compiler from The official site](https://go.dev/dl/), or install it with
+Install the GoLang [compiler from The official site](https://go.dev/dl/) and unpack the tar file, or install it with
 
 ```bash
 $ sudo snap install go --classic
