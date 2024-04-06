@@ -81,6 +81,8 @@ func PrintHelpInfo() {
 	fmt.Println()
 	fmt.Println("      --listcb:\tList possible colors as backgrounds (listc[olors]b[ackgrounds])")
 	fmt.Println()
+	fmt.Println("      --lists:\t List possible styles and their ANSI codes")
+	fmt.Println()
 	//fmt.Println("    Exit Status:")
 	//fmt.Println("\t2: Option not found")
 	//fmt.Println("\t0: Program success (default)")

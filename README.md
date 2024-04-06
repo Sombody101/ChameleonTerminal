@@ -79,6 +79,13 @@ Or as mentioned above, in *any order*:
 $ gecko "[underlined cyan1 blinking on black]wOW, THIs Is soO COoOl![/]"
 ```
 
+### And More
+To get more information on Gecko, just run:
+```bash
+$ gecko --help
+```
+And you will get a list of all options to be used!
+
 ### Escaping Markup Tags
 
 To escape a markup tag, just add a second open bracket to the start of the tag:
