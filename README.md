@@ -34,7 +34,7 @@ $ gecko --listc # or --listcb to see them as background colors
 ```
 
 It's recommended that you still use the `[/]` tag, at least at the end of the line to prevent runaway colors from leaking into the users prompt, or terminals next output. An even better
-solution is to add `\033[0m` to the front of your `PS1` environment variable to ensure nothing can mess with the next input prompt.
+solution is to add `\[\033[0m\]` to the front of your `PS1` environment variable to ensure nothing can mess with the next input prompt.
 
 > [!IMPORTANT]  
 > Anything that is found to be a tag will be parsed. If the data inside cannot be mapped
