@@ -106,7 +106,7 @@ $ gecko "[[this isn't going to be parsed for colors :D]"
 
 ## Releases
 
-~~Go to [Releases](https://github.com/ScripturaOpus/ChameleonTerminal/releases/) and download the most recent version.~~
+~~Go to [Releases](https://github.com/Sombody101/ChameleonTerminal/releases/) and download the most recent version.~~
 
 Precompiled binaries will no longer be provided. The initial release will still
 be available, but not up to date.
@@ -123,7 +123,7 @@ https://go.dev/doc/install
 To clone the repo, run this bash command
 
 ```bash
-$ git clone "https://github.com/ScripturaOpus/ChameleonTerminal.git"
+$ git clone "https://github.com/Sombody101/ChameleonTerminal.git"
 ```
 
 Once installed, navigate to `./ChameleonTerminal/` and run `make` (or `make build`).
