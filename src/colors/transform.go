@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"image/color"
 	"math"
-	"runtime"
 	"strconv"
 	"strings"
 
 	"gecko/argparse"
+	"gecko/verbose"
 )
 
 const (
@@ -63,7 +63,7 @@ func MarkupText(str string) string {
 			if char == '[' {
 				// Check if it's a escaped tag
 				if i+1 < len && str[i+1] == '[' {
-					Verbose("Escaped tag at index", fmt.Sprint(i+1))
+					verbose.Log("Escaped tag at index", fmt.Sprint(i+1))
 					sb.WriteRune('[') // Add tag
 					i++               // Go past escaped tag
 					continue
@@ -77,7 +77,7 @@ func MarkupText(str string) string {
 
 		case "readingColor":
 			if char == '[' {
-				Verbose("Found unexpected character (ignoring)", string(char))
+				verbose.Log("Found unexpected character (ignoring)", string(char))
 				continue
 			}
 
@@ -96,7 +96,7 @@ func MarkupText(str string) string {
 			if char == ']' && !(i-1 >= 0 && str[i-1] == '[') {
 				sb.WriteString(RESET_COLOR) // Reset colors
 			} else {
-				Verbose("Found unexpected character (ignoring)", string(char))
+				verbose.Log("Found unexpected character (ignoring)", string(char))
 				// Ignore
 
 				//fmt.Printf("Encountered unexpected '%c' character when looking for closing tag ']' at index %d in snippet `%v'\n", char, i, getSurrounding(str, i, 5))
@@ -138,9 +138,7 @@ func resolveColorCode(colorStr string, resolvingBackground bool) string {
 		}
 	}
 
-	if argparse.Configuration.Verbose {
-		Verbose("resolving tag", colorStr)
-	}
+	verbose.Log("resolving tag", colorStr)
 
 	styleStr, colorStr := addExtraStyles(colorStr)
 
@@ -154,7 +152,7 @@ func resolveColorCode(colorStr string, resolvingBackground bool) string {
 			iColor, err := strconv.ParseInt(colorStr[1:], 16, 32)
 
 			if err == nil {
-				finalColor += Verbose("hex color", outputColorFromHex(int(iColor), resolvingBackground))
+				finalColor += verbose.Log("hex color", outputColorFromHex(int(iColor), resolvingBackground))
 			}
 
 		} else if strings.HasPrefix(colorStr, "rgb(") {
@@ -167,7 +165,7 @@ func resolveColorCode(colorStr string, resolvingBackground bool) string {
 			_, err := fmt.Sscanf(colorStr, "rgb(%d,%d,%d)", &r, &g, &b)
 
 			if err == nil {
-				finalColor += Verbose("rgb color", outputColorFromRgb([3]byte{r, g, b}, resolvingBackground))
+				finalColor += verbose.Log("rgb color", outputColorFromRgb([3]byte{r, g, b}, resolvingBackground))
 			}
 
 		} else {
@@ -178,11 +176,11 @@ func resolveColorCode(colorStr string, resolvingBackground bool) string {
 			iColor, found := Colors[colorStr]
 
 			if !found {
-				Verbose("failed to find color", colorStr)
+				verbose.Log("failed to find color", colorStr)
 				return ""
 			}
 
-			finalColor += Verbose("named color", outputColorFromHex(iColor, resolvingBackground))
+			finalColor += verbose.Log("named color", outputColorFromHex(iColor, resolvingBackground))
 		}
 	}
 
@@ -191,14 +189,14 @@ func resolveColorCode(colorStr string, resolvingBackground bool) string {
 		bOutput := fmt.Sprintf("%s;%s", styleStr, finalColor)
 		bOutput = cleanSemicolons(bOutput)
 
-		return Verbose("final background", bOutput)
+		return verbose.Log("final background", bOutput)
 	}
 
 	// 'm' terminates the escape code, regardless of style data being present
 	finalColor = fmt.Sprintf("%s;%s", styleStr, finalColor)
 	finalColor = cleanSemicolons(finalColor)
 	finalColor = fmt.Sprintf("\033[%sm", finalColor)
-	return Verbose("final color", finalColor)
+	return verbose.Log("final color", finalColor)
 }
 
 // Format a color from Hex to RGB string
@@ -230,10 +228,10 @@ func addExtraStyles(str string) (string, string) {
 
 		if found {
 			sb.WriteString(code)
-			Verbose("style item", item)
+			verbose.Log("style item", item)
 		} else {
 			color = item
-			Verbose("possible color item", item)
+			verbose.Log("possible color item", item)
 		}
 	}
 
@@ -242,7 +240,7 @@ func addExtraStyles(str string) (string, string) {
 		outputStr = outputStr[1:]
 	}
 
-	return Verbose("resolved styles", outputStr), Verbose("filtered color", color)
+	return verbose.Log("resolved styles", outputStr), verbose.Log("filtered color", color)
 }
 
 // Known (and supported) codes to manipulate terminal input
@@ -293,31 +291,4 @@ func cleanSemicolons(text string) string {
 	}
 
 	return strings.Trim(result.String(), ";")
-}
-
-// Write message to the console when --verbose is used
-func Verbose(prefix string, in string) string {
-	if argparse.Configuration.Verbose {
-		caller := CallerName(1)
-		fmt.Printf("[%s] %s: `%s`\n", caller, prefix, strings.ReplaceAll(in, "\033", "\\033"))
-	}
-
-	return in
-}
-
-func CallerName(skip int) string {
-	pc, _, _, ok := runtime.Caller(skip + 1)
-	if !ok {
-		return ""
-	}
-
-	f := runtime.FuncForPC(pc)
-	if f == nil {
-		return ""
-	}
-
-	name := f.Name()
-
-	parts := strings.Split(name, ".")
-	return parts[len(parts)-1]
 }
