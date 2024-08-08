@@ -1,15 +1,22 @@
+### Before you use Gecko!
+
+This is a project I created so I could learn Go. If you need an application to help with styling text, I would ***highly*** recommend
+using [gum](https://github.com/charmbracelet/gum) over Gecko. It has many more features and support.
+
 # Gecko
 
 A command line tool that makes it easier to style text, with great speed!
 
 ## Table of Contents
 1. [Using Gecko](#using-gecko)
-   1. [Backgrounds](#backgrounds)
-   2. [Different Colors](#different-colors)
-   3. [Styles](#styles)
-   4. [Escaping Tags](#escaping-markup-tags)
-2. [How to Install](#how-to-install)
-3. [What's with the name?](#why-is-the-app-called-gecko-and-the-repository-called-chameleon)
+   1. [Styling Backgrounds](#backgrounds)
+   1. [Different Colors](#different-colors)
+   1. [ANSI Styles](#styles)
+   1. [Escaping Markup Tags](#escaping-markup-tags)
+1. [Build Instructions](#build-instructions)
+   1. [Install Release Build](#releases)
+   1. [Building Yourself](#building-yourself) 
+1. [What's with the name?](#why-is-the-app-called-gecko-and-the-repository-called-chameleon)
 
 ## Using Gecko
 To use Gecko, simply use the command with text.
@@ -95,28 +102,62 @@ $ gecko "[[this isn't going to be parsed for colors :D]"
 # output: [this isn't going to be parsed for colors :D]
 ```
 
-# How to Install
+# Build Instructions
 
 ## Releases
 
-Go to [Releases](https://github.com/ScripturaOpus/ChameleonTerminal/releases/) and download the most recent version.
+~~Go to [Releases](https://github.com/ScripturaOpus/ChameleonTerminal/releases/) and download the most recent version.~~
+
+Precompiled binaries will no longer be provided. The initial release will still
+be available, but not up to date.
 
 ## Building Yourself
 
-Install the GoLang [compiler from The official site](https://go.dev/dl/) and unpack the tar file, or install it with
+### Install the GoLang SDK
 
-```bash
-$ sudo snap install go --classic
-```
+You can install the GoLang SDK from their official website using these instructions:
+https://go.dev/doc/install
 
-Clone the repo.
+### Cloning The Repo
+
+To clone the repo, run this bash command
 
 ```bash
 $ git clone "https://github.com/ScripturaOpus/ChameleonTerminal.git"
 ```
 
-Navigate to `./ChameleonTerminal/`, then run `make`.
+Once installed, navigate to `./ChameleonTerminal/` and run `make` (or `make build`).
 Gecko will be built into the `build` folder.
+
+After which, you can check the version to ensure it build correctly
+
+```bash
+$ gecko --version
+```
+
+The output should look like this:
+```
+vd1dffa9d9a0e7f680c4f33ff8de697dc9fcb06cf+RELEASE
+ch: d1dffa9
+bt: 2024-08-07T20:42:31
+```
+
+### Testing Gecko
+
+There are a few different argument switches that show off what Gecko
+can do. The most basic switch is `--listc`, or "list colors". This switch
+will make Gecko run through every color it detects as supported by your terminal and prints it with sample text.
+
+![A short sample of 'listc' output](.GitAssets/listc-sample.png "A short sample of 'listc' output")
+
+There are two other variations of this switch. `listcb` (list color background), and `lists` (list styles).
+
+![A short sample of 'listcb' output](.GitAssets/listcb-sample.png "A short sample of 'listc' output")
+![An example of 'lists' output](.GitAssets/lists-sample.png "An example of 'lists' output")
+
+Any text supplied along with these switches will be used as the sample text instead of the default `Hello, World!`
+
+![alt text](.GitAssets/text-override-sample.png)
 
 ## Why is the app called "Gecko" and the repository called "Chameleon"?
 
@@ -129,5 +170,5 @@ but it's better than having to type out "chameleon" every time you wanted to use
 
 Why are you looking down here?
 
-Aww, you really thought this was good enough that someone would give me money.
-That's really nice.
+Aww, you really thought this was good enough that someone would give me money?
+That's really nice of you.

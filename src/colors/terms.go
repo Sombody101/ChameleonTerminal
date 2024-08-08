@@ -18,23 +18,22 @@ func LoadPossibleColors(term string) {
 	case 2:
 		LoadColors256() // 256 colors
 		return
-
-		//case 3:
-		//	LoadColors8(pcolors) // 8 colors
-		//	return pcolors
 	}
 
 	if ansiSupported() {
 		LoadColors256()
-	} // Otherwise load no colors
+	}
+
+	// Otherwise load no colors and print all text normally
 }
 
 func ansiSupported() bool {
+
 	// Check using tput if available
 	if _, err := exec.LookPath("tput"); err == nil {
 		out, err := exec.Command("tput", "colors").Output()
 		if err == nil {
-			var numColors int // Declare numColors here
+			var numColors int
 
 			_, err := fmt.Sscanln(string(out), &numColors)
 
@@ -76,10 +75,10 @@ func PrintHelpInfo() {
 	fmt.Println()
 	fmt.Println("      -M:\tDo not resolve markup sequences")
 	fmt.Println()
-	fmt.Println("      --listc:\tList possible colors (listc[colors])")
+	fmt.Println("      --listc:\tList possible colors (listc[olors])")
 	fmt.Println("          (Add text after to change sample text, markup is still parsed)")
 	fmt.Println()
-	fmt.Println("      --listcb:\tList possible colors as backgrounds (listc[olors]b[ackgrounds])")
+	fmt.Println("      --listcb:\tList possible colors as backgrounds (listc[olor]b[ackgrounds])")
 	fmt.Println()
 	fmt.Println("      --lists:\t List possible styles and their ANSI codes")
 	fmt.Println()

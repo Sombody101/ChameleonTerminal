@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	// Remove app path
 	args := os.Args[1:]
 
 	// Sort text and command switches, then get a config
@@ -56,6 +57,8 @@ func main() {
 
 // List all supported colors
 func listColors() {
+
+	// Sample text to be displayed [Overridable]
 	sampleText := "Hello, World!"
 	if argparse.Configuration.TextInput != "" {
 		sampleText = argparse.Configuration.TextInput
@@ -76,26 +79,40 @@ func listColors() {
 		}
 
 		colorCode := colors.Colors[colorName]
-		fmt.Println(colors.MarkupText(fmt.Sprintf("%-17s (#%06x) [%s]%s[/]", colorName, colorCode, sampleColor, sampleText)))
+		fmt.Println(colors.MarkupText(fmt.Sprintf(
+			"%-17s (#%06x) [%s]%s[/]",
+			colorName,
+			colorCode,
+			sampleColor,
+			sampleText)))
 	}
 }
 
 func listStyles() {
+
+	// Sample text to be displayed [Overridable]
 	sampleText := "Hello, World!"
 	if argparse.Configuration.TextInput != "" {
 		sampleText = argparse.Configuration.TextInput
 	}
 
+	// Load all colors into an array so they can be sorted
 	keys := make([]string, 0, len(colors.FormatCodes))
 	for k := range colors.FormatCodes {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
+	// Print all colors to the console with the sample text
 	for _, styleName := range keys {
 		sampleStyle := styleName
 
 		styleCode := strings.Trim(colors.FormatCodes[styleName], ";")
-		fmt.Println(colors.MarkupText(fmt.Sprintf("%-11s (ANSI: %+2s) [%s]%s[/]", styleName, styleCode, sampleStyle, sampleText)))
+		fmt.Println(colors.MarkupText(fmt.Sprintf(
+			"%-11s (ANSI: %+2s) [%s]%s[/]",
+			styleName,
+			styleCode,
+			sampleStyle,
+			sampleText)))
 	}
 }
