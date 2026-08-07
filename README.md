@@ -3,6 +3,8 @@
 This is a project I created so I could learn Go. If you need an application to help with styling text, I would ***highly*** recommend
 using [gum](https://github.com/charmbracelet/gum) over Gecko. It has many more features and support.
 
+If for some ungodly reason you still want to use this, then I'd recommend using the rust port, [rgecko](https://github.com/sombody101/rgecko).
+
 # Gecko
 
 A command line tool that makes it easier to style text, with great speed!
